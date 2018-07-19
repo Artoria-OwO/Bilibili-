@@ -20,9 +20,12 @@ while i<100000000 :
 
 	follower=dict1.get("follower")
 	name=(dict1.get("card",{})).get("name")
+	time.sleep(2)
+	if(follower<10000):
+		i = i + 1
+		continue
 	print(i,name,follower)
 	with open(filename,'a+') as f:
 		f.write(str('uid:')+"\t"+str(i)+"\t"+str(name)+"\t"+str(follower)+"\n")
 		f.close()
 	i = i + 1
-	time.sleep(0.5)

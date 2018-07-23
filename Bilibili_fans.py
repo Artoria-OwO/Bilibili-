@@ -7,6 +7,9 @@ import json
 
 filename = 'bilibili_fans.txt'
 i = 1
+requests.adapters.DEFAULT_RETRIES = 5
+s = requests.session()
+s.keep_alive = False
 header = {
 			'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36'}
 uid_list =[]
@@ -22,8 +25,9 @@ def get_up_fans(uid):
 	follower=dict1.get("follower")
 	name=(dict1.get("card",{})).get("name")
 	_id=(dict1.get("card",{})).get("mid")
-	uid_list.append(uid)
-	time.sleep(2)
+	if uid not in uid_list:
+		uid_list.append(uid)
+	time.sleep(1)
 	if(follower<100000):
 		return
 	print(_id,name,follower)
@@ -40,7 +44,7 @@ def get_up_attentions(uid):
 	dict_json=json.loads(json_response)
 	dict1=dict_json.get("data",{})
 	attentions=(dict1.get("card",{})).get("attentions")
-	time.sleep(2)
+	time.sleep(1)
 	for attention in attentions:
 		_url='https://api.bilibili.com/x/web-interface/card?mid=%d&jsonp=jsonp' % attention
 		_r=requests.get(_url,headers=header)
@@ -49,7 +53,7 @@ def get_up_attentions(uid):
 		_dict_json=json.loads(_json_response)
 		_dict1=_dict_json.get("data",{})
 		_attentions=(_dict1.get("card",{})).get("attentions")
-		time.sleep(2)
+		time.sleep(1)
 		if uid not in _attentions:
 			if attention not in uid_list:
 				get_up_fans(attention)
@@ -59,4 +63,3 @@ def get_up_attentions(uid):
 while i<100000000 :
 	get_up_fans(i)
 	i = i + 1
-
